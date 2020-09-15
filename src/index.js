@@ -5,6 +5,7 @@ import { Text,
   StyleSheet,
   Dimensions,
   View,
+  TouchableOpacity,
   ScrollView,
   TextInput
 } from 'react-native';
@@ -17,7 +18,9 @@ export default class App extends Component {
   {
     super(props);
     this.state = {
-      dataBanner:[]
+      dataBanner:[],
+      dataCategories[],
+      selectCatg:0
     }
   }
 
@@ -30,6 +33,7 @@ export default class App extends Component {
       this.setState({
         isLoading: false,
         dataBanner: responseJson.banner,
+        dataCategories: responseJson.categories
       });
 
     })
@@ -54,10 +58,38 @@ export default class App extends Component {
                 }
               </Swiper>
               <View style={{height:20}} />
-          </View>
-        </View>
+              </View>
+              <View style={{width:width, borderRadius:20, paddingVertical:20, backgroundColor:'white'}}>  
+              <Text style={style.titleCatg}>Categories {this.state.selectCatg}</Text>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+              <FlatList
+              horizontal={true}
+              data={this.state.dataCategories}
+              renderItem={({item})=>this._renderItem(item)}
+              keyExtractor ={(item,index)=>index.toSrting()}
+              />
+              <Text>App delivery</Text>
+              <Text>{JSON.stringify(this.state.dataCategories)}</Text>
+              <View style={{height:20}} />
+              </View>
+            </View>
       </ScrollView>
-    );
+              );
+            }
+
+            _renderItem(item){
+                return(
+                     <TouchableOpacity style={[styles.divCategorie,{backgroundColor:item.color}]}
+      onPress={()=>this.setState({selectCatg:item.id})}>
+        <Image
+          style={{width:100,height:80}}
+          resizeMode="contain"
+          source={{uri : item.image}} />
+        <Text style={{fontWeight:'bold',fontSize:22}}>{item.name}</Text>
+      </TouchableOpacity>
+                )
+            }
+ 
+    )
   }
 
 }
@@ -68,4 +100,17 @@ const styles = StyleSheet.create({
     width:width-40,
     borderRadius:10,
     marginHorizontal:20
-  }, 
+  },
+  divCategorie:{
+    backgroundColor:'red',
+    margin:5, alignItems:'center',
+    borderRadius:10,
+    padding:10
+  },
+  titleCatg:{
+    fontSize:30,
+    fontWeight:'bold',
+    textAlign:'center',
+    marginBottom:10
+  } 
+});
